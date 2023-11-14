@@ -1,0 +1,35 @@
+.login-container2 {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-bottom: 179px;
+}
+.login-container {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-right: 470px;
+  padding-left: 470px;
+  margin-top: 88px;
+}
+.sign-in-button {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-right: 124px;
+  padding-left: 124px;
+  margin-top: 41px;
+}
+.sign-in-title {
+  flex: 0 0 auto;
+  align-self: stretch;
+  margin-top: -36px;
+  font: 500 24px Inter;
+  color: rgba(70, 62, 62, 1);
+  text-align: center;
+}

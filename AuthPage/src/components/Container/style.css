@@ -1,0 +1,11 @@
+.padding-left-auto {
+  flex: 0 0 auto;
+  padding-left: 2.75px;
+}
+.green-rounded-box {
+  box-sizing: border-box;
+  width: 249px;
+  height: 54px;
+  background: rgba(89, 165, 44, 1);
+  border-radius: 20px;
+}
