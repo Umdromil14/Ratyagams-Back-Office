@@ -1,0 +1,27 @@
+.container {
+    height: auto;
+    width: 45%;
+    background-color: #59A52C;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+#img {
+    width: 400px;
+    height: 400px;
+    border-radius: 20px;
+}
+
+#button {
+    width: 20%;
+    height: 50px;
+    border-radius: 20px;
+    background-color: #59A52C;
+    color: #463E3E;
+    font-size: 1.5rem;
+    margin-top: 50px;
+    
+    border: 2px solid #463E3E;
+    
+}
