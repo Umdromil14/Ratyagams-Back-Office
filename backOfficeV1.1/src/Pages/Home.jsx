@@ -4,17 +4,30 @@ import InputWithLabel from "../components/InputWithLabel";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setToken } from "../store/slice/token";
+import { useState } from "react";
 import axios from "axios";
 import getValues from "../APIAccess/APIAccess";
+import { notification } from "antd";
 
 function Home() {
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
+    const [error, setError] = useState(false);
+    const [api,contextHolder] = notification.useNotification();
+    const [messageError, setMessageError] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const openNotificationError = () => {
+        api['error']({
+            message: "Something went wrong...",
+            description: messageError,
+            placement: "bottomRight",
+        });
+    };
+
     const signIn = async () => {
-        //set a state loading on the button to true
+        setError(false);
         try {
             const result = await axios.post(
                 "http://localhost:3001/user/login",
@@ -37,17 +50,30 @@ function Home() {
                 if (user.is_admin) {
                     navigate("/admin");
                 } else {
-                    //error message
-                    alert("You are not an admin");
+
                 }
             }
         } catch (error) {
-            alert(error.response.data);
+            setError(true);
+            switch (error.response.status) {
+                case 401:
+                    setMessageError("Wrong password");
+                    openNotificationError();
+                    break;
+                case 404:
+                    setMessageError("Wrong username");
+                    openNotificationError();
+                    break;
+                default:
+                    setMessageError("Error");
+                    openNotificationError();
+            }
         }
     };
 
     return (
         <div>
+            {contextHolder}
             <img src="./src/Images/ratyagames.png" alt="ratyagames" id="img" />
             <div className="container">
                 {InputWithLabel(
