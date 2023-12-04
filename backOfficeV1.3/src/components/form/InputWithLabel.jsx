@@ -1,4 +1,4 @@
-import "../../css/InputWithLabel.css";
+import "../../css/form.css";
 import "../../css/modal.css";
 /**
  *
@@ -14,7 +14,10 @@ import "../../css/modal.css";
 function InputWithLabel(label, input, className, placeholder) {
     return (
         <div className={className.label}>
-            <label htmlFor={label.htmlFor}>{label.label}</label>
+            <span>
+            <label>{label.label}</label>
+            {label.Required ? <label className="required">*</label> : null}
+            </span>
             <input
                 placeholder={placeholder}
                 className={className.input}

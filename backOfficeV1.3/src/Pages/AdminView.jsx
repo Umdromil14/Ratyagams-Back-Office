@@ -57,7 +57,7 @@ function AdminView() {
             )}
             <div className="table">{createTable({ data: values })}</div>
             <div className="modal">
-                {modal(isModalOpen, setIsModalOpen, modalTitle, data, ref)}
+                {modal(isModalOpen, setIsModalOpen, modalTitle, data, ref,token)}
             </div>
         </>
     );

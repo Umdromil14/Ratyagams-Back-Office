@@ -64,13 +64,13 @@ function Home() {
             <img src="./src/Images/logo.png" alt="ratyagames" id="img" />
             <div className="container">
                 {InputWithLabel(
-                    { htmlFor: "username", label: "Username" },
+                    {label: "Username"},
                     { type: "text", id: "username", ref: usernameRef },
                     { label: "label", input: "input"},
                     "Username"
                 )}
                 {InputWithLabel(
-                    { htmlFor: "password", label: "Password " },
+                    {label: "Password "},
                     { type: "password", id: "password", ref: passwordRef },
                     { label: "label", input: "input"},
                     "Password"

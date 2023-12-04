@@ -28,9 +28,8 @@ function modalModeling(title, data, ref) {
 function userModal(userInformations) {
     return (
         <div className="divModal">
-            {/* send a proper style to differ with the login label */}
             {InputWithLabel(
-                { htmlFor: "username", label: "Username*" },
+                { label: "Username", Required: true },
                 {
                     type: "text",
                     id: "username",
@@ -39,9 +38,8 @@ function userModal(userInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Username"
             )}
-            {/* send a proper style to differ with the login label */}
             {InputWithLabel(
-                { htmlFor: "email", label: "Email*" },
+                { label: "Email", Required: true },
                 {
                     type: "text",
                     id: "email",
@@ -50,9 +48,8 @@ function userModal(userInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Email"
             )}
-            {/* send a proper style to differ with the login label */}
             {InputWithLabel(
-                { htmlFor: "password", label: "Password*" },
+                { label: "Password", Required: true },
                 {
                     type: "password",
                     id: "password",
@@ -61,9 +58,8 @@ function userModal(userInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Password"
             )}
-            {/* send a proper style to differ with the login label */}
             {InputWithLabel(
-                { htmlFor: "firstname", label: "Firstname" },
+                { label: "Firstname" },
                 {
                     type: "text",
                     id: "firstname",
@@ -73,9 +69,8 @@ function userModal(userInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Firstname"
             )}
-            {/* send a proper style to differ with the login label */}
             {InputWithLabel(
-                { htmlFor: "lastname", label: "Lastname" },
+                { label: "Lastname", Required: false },
                 {
                     type: "text",
                     id: "lastname",
@@ -84,17 +79,15 @@ function userModal(userInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Lastname"
             )}
-            {/* title for the radios button : user or admin ?
-            no obligatory cause set values to false */}
             {RadioButton(
+                { label: "Admin" },
                 {
                     1: "User",
                     2: "Admin",
                 },
                 (value) => {
                     userInformations.is_admin = value.target.value === 1;
-                },
-                "User or admin ?"
+                }
             )}
         </div>
     );
@@ -104,9 +97,8 @@ function gameModal(gameInformations, data) {
     const { users, publication } = data;
     return (
         <>
-            {/* send a proper style to differ with the login label 
-            title for it : please select an username*/}
             {ScrollDown(
+                { label: "select a user", Required: true },
                 users,
                 (value) => {
                     gameInformations.user_id = value;
@@ -117,28 +109,31 @@ function gameModal(gameInformations, data) {
                     value: "id",
                 }
             )}
-            {/* send a style
-            title : please select a video game in the right platform*/}
-            {MultipleScrollDown(publication, (value) => {
-                gameInformations.publication_id = value[1];
-            })}
-            {/* return an array with [platformCode,publicationId] */}
+            {MultipleScrollDown(
+                { label: "select a publication", Required: true },
+                "select a video game",
+                publication,
+                (value) => {
+                    gameInformations.publication_id = value[1];
+                }
+            )}
+            {RadioButton(
+                { label: "Is owned" },
+                { 1: "owned", 2: "not owned" },
+                (value) => {
+                    gameInformations.is_owned = value.target.value === 1;
+                }
+            )}
 
-            {/*really need it ? need explanation by the homies */}
-            {RadioButton({ 1: "owned", 2: "not owned" }, (value) => {
-                gameInformations.is_owned = value.target.value === 1;
-            })}
-
-            {/* title : please select a review date */}
-            {Date((value) => {
+            {Date({ label: "Review date" }, (value) => {
                 if (value) {
                     gameInformations.review_date = `${value.$y}-${value.$M}-${value.$D}`;
                 } else {
                     gameInformations.review_date = undefined;
                 }
             })}
-            {/* title : please select a number between 0 and 5 */}
             {inputForNumber(
+                { label: "Review rating" },
                 (review_rating) =>
                     (gameInformations.review_rating = review_rating),
                 0,
@@ -146,9 +141,8 @@ function gameModal(gameInformations, data) {
                 0
             )}
 
-            {/* send a proper style to differ with the login label */}
             {InputWithLabel(
-                { htmlFor: "review_comment", label: "Review comment" },
+                { label: "Review comment" },
                 {
                     type: "text",
                     id: "review_comment",
@@ -166,8 +160,8 @@ function publicationModal(publicationInformations, data) {
     const { videoGame, platform } = data;
     return (
         <>
-            {/* title : please select a platform */}
             {ScrollDown(
+                { label: "select a platform", Required: true },
                 platform,
                 (value) => {
                     publicationInformations.platform_code = value;
@@ -178,8 +172,8 @@ function publicationModal(publicationInformations, data) {
                     value: "code",
                 }
             )}
-            {/* title : please select a video Game */}
             {ScrollDown(
+                { label: "select a video game", Required: true },
                 videoGame,
                 (value) => {
                     publicationInformations.video_game_id = value;
@@ -191,16 +185,15 @@ function publicationModal(publicationInformations, data) {
                 }
             )}
 
-            {/* title : please select a date when the game has been released */}
-            {Date((value) => {
+            {Date({label : "Release date"}, (value) => {
                 if (value) {
                     publicationInformations.release_date = `${value.$y}-${value.$M}-${value.$D}`;
                 } else {
                     publicationInformations.release_date = undefined;
                 }
             })}
-            {/* please fill the price of the game */}
             {inputForNumber(
+                { label: "Release price" },
                 (release_price) =>
                     (publicationInformations.release_price = release_price),
                 0,
@@ -208,9 +201,8 @@ function publicationModal(publicationInformations, data) {
                 0,
                 0.01
             )}
-            {/* please fill an url */}
             {InputWithLabel(
-                { htmlFor: "store_page_url", label: "Store page url" },
+                { label: "Game link", Required: false },
                 {
                     type: "text",
                     id: "store_page_url",
@@ -228,9 +220,8 @@ function publicationModal(publicationInformations, data) {
 function platformModal(platformInformations) {
     return (
         <>
-            {/* title : please provide the code of the platform (PS4 for playsation 4) */}
             {InputWithLabel(
-                { htmlFor: "code", label: "Code*" },
+                { label: "Code", Required: true },
                 {
                     type: "text",
                     id: "code",
@@ -239,9 +230,8 @@ function platformModal(platformInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Code"
             )}
-            {/* title : please provide the description of the code */}
             {InputWithLabel(
-                { htmlFor: "description", label: "Description*" },
+                { label: "Description", Required: true },
                 {
                     type: "text",
                     id: "description",
@@ -251,9 +241,8 @@ function platformModal(platformInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Description"
             )}
-            {/* title : please provide a short abbreviation for the platform */}
             {InputWithLabel(
-                { htmlFor: "abbreviation", label: "Abbreviation*" },
+                { label: "Abbreviation", Required: true },
                 {
                     type: "text",
                     id: "abbreviation",
@@ -271,32 +260,30 @@ function categoryModal(categoryInformations, data) {
     const { videoGame, genre } = data;
     return (
         <>
-            {/* title for the scrollDown : please select a video Game* */}
             {ScrollDown(
+                { label: "select a video game", Required: true },
                 videoGame,
                 (value) => {
                     categoryInformations.video_game_id = value;
                 },
-                "select a video game*",
+                "select a video game",
                 {
                     label: "name",
                     value: "id",
                 }
             )}
-            {/* title for the scrolldown : please select a genre* */}
             {ScrollDown(
+                { label: "select a genre", Required: true },
                 genre,
                 (value) => {
                     categoryInformations.genre_id = value;
                 },
-                "select a genre*",
+                "select a genre",
                 {
                     label: "name",
                     value: "id",
                 }
             )}
-            {/* do i really need to let this ? */}
-            <p>* : must be filled</p>
         </>
     );
 }
@@ -304,10 +291,8 @@ function categoryModal(categoryInformations, data) {
 function videoGameModal(videoGameInformations) {
     return (
         <>
-            {/* send a proper style to differ with the login label */}
-
             {InputWithLabel(
-                { htmlFor: "name", label: "Name*" },
+                { label: "Name", Required: true },
                 {
                     type: "text",
                     id: "name",
@@ -316,10 +301,8 @@ function videoGameModal(videoGameInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Name"
             )}
-            {/* send a proper style to differ with the login label */}
-
             {InputWithLabel(
-                { htmlFor: "description", label: "Description*" },
+                { label: "Description", Required: true },
                 {
                     type: "text",
                     id: "description",
@@ -336,10 +319,8 @@ function videoGameModal(videoGameInformations) {
 function genreModal(genreInformations) {
     return (
         <>
-            {/* send a proper style to differ with the login label */}
-
             {InputWithLabel(
-                { htmlFor: "name", label: "Name*" },
+                { label: "Name", Required: true },
                 {
                     type: "text",
                     id: "name",
@@ -348,10 +329,8 @@ function genreModal(genreInformations) {
                 { label: "labelModal", input: "inputModal" },
                 "Name"
             )}
-            {/* send a proper style to differ with the login label */}
-
             {InputWithLabel(
-                { htmlFor: "description", label: "Description*" },
+                { label: "Description", Required: true },
                 {
                     type: "text",
                     id: "description",

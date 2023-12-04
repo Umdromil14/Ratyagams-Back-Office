@@ -1,5 +1,7 @@
 import { Select } from "antd";
+import "../../css/RadioButton.css";
 function ScrollDown(
+    label,
     values,
     handleChange,
     placeholder,
@@ -7,9 +9,14 @@ function ScrollDown(
     defaultValue = undefined
 ) {
     const scrollDown = (
+        <div className="form">
+            <span>
+                <label>{label.label}</label>
+                {label.Required ? <label className="required">*</label> : null}
+            </span>
         <Select
             showSearch
-            style={{ width: "300px" }}
+            style={{ width: "200px" }}
             placeholder={placeholder}
             onChange={handleChange}
             optionFilterProp="children"
@@ -27,6 +34,7 @@ function ScrollDown(
                 </Select.Option>
             ))}
         </Select>
+        </div>
     );
     return scrollDown;
 }

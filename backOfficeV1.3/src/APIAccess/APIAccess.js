@@ -70,3 +70,12 @@ export async function login(url, user, dispatch) {
         throw error.response.status;
     }
 }
+
+export async function postValues(url, token, body) {
+    console.log(body);
+    try {
+        await axios.post(`http://localhost:3001/${url}`, body, token);
+    } catch (error) {
+        console.log(error);
+    }
+}

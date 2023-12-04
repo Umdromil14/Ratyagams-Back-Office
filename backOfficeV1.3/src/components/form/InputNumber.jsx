@@ -1,14 +1,21 @@
 import { InputNumber } from "antd";
+import "../../css/form.css";
 
-function inputForNumber(onChange, min, max, defaultValue, step = undefined) {
+function inputForNumber(label,onChange, min, max,placeHolder, step = undefined) {
     return (
+        <div className="form">
+            <span>
+                <label>{label.label}</label>
+                {label.Required ? <label className="required">*</label> : null}
+            </span>
         <InputNumber
             min={min}
             max={max}
+            placeholder={placeHolder}
             step={step ? step : undefined}
-            defaultValue={defaultValue}
             onChange={onChange}
         />
+        </div>
     );
 }
 

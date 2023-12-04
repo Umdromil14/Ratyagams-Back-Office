@@ -1,7 +1,9 @@
-.black {
+.form {
     font-weight: bold;
     font-size: large;
     justify-content: space-between;
+    display : flex;
+    margin: 0.5rem;
     align-items: center;
     padding: 0.5rem;
     width: 100%;    

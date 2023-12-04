@@ -454,7 +454,10 @@ function navigationBar(
                 className="navBar"
                 onClick={handleClick}
                 mode="horizontal"
+                style={{ color: "white" }}
                 items={adminPossibilities}
+                selectedKeys={[current]}
+                
             />
             <h2 id="titleView">{title}</h2>
         </div>

@@ -1,9 +1,12 @@
 import { Radio } from "antd";
 import "../../css/RadioButton.css"
-function RadioButton(values, onChange, title) {
+function RadioButton(label,values, onChange) {
     const radio = (
-        <div>
-            <label className={"black"}>{title}</label>
+        <div className="form">
+            <span>
+                <label>{label.label}</label>
+                {label.Required ? <label className="required">*</label> : null}
+            </span>
         <Radio.Group
             onChange={onChange}
             optionType="button"
