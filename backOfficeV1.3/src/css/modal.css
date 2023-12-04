@@ -1,0 +1,35 @@
+.labelModal {
+    font-weight: bold;
+    font-size: large;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    width: 100%;    }
+
+.inputModal {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border: 1px solid #463e3e;
+    border-radius: 20px;
+    width: 50%;
+    text-align: center;
+}
+::placeholder {
+    color: #463e3e;
+    opacity: 0.5;
+    font-size: 1rem;
+    align-items: center;
+}
+
+.inputModal:focus {
+    outline: none;
+    border-color: #463e3e;
+}
+
+.divModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
