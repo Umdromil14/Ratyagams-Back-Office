@@ -150,13 +150,13 @@ const createTable = ({ data }) => {
             style={{ overflow: "auto", background : "#ffff",borderRadius: "30px"}}
             pagination= {{
                 defaultPageSize: 10,
-                pageSizeOptions: ['5', '10', '20', '50', '100'],
+                showSizeChanger: false,
                 position: ['bottomCenter'],
-                showQuickJumper: true,
                 style: {backgroundColor: '#ffff'},
                 responsive: true,
-                showSizeChanger: true,
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                onChange: (page, pageSize) => {
+                    console.log(page, pageSize);
+                },
             }}
         />
     );
