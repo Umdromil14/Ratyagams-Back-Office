@@ -1,76 +1,75 @@
 import { postValues } from "./APIAccess";
 import * as Enum from "../constants/enum";
+import dayjs from "dayjs";
 
 /**
- * function used to post date depending on the title
+ * Post values in the database
  *
- * @param {string} title the title of the data to post
- * @param {FormData} form the form to post
- * @param {string} token the token to use
- * @throws {Error} throw an error if it failed
+ * @param {string} title the title of the table
+ * @param {FormInstance} form the form with the values to post
+ * @param {object} token the token of the user
+ * 
+ * @throws {Error} if t
+e request failedh
  *
  * @returns {Promise<void>}
  */
-async function postForm(title, form, token) {
+export default async function post(title, form, token) {
     switch (title) {
-        case Enum.titleUser:
-            await postValues(Enum.titleUser, token, {
-                username: form.get("username"),
-                password: form.get("password"),
-                email: form.get("email"),
-                firstname: form.get("firstname"),
-                lastname: form.get("lastname"),
-                is_admin: form.get("is_admin") === "true",
+        case Enum.TITLE_USER:
+            await postValues(Enum.TITLE_USER, token, {
+                ...form,
+                firstname: form.firstname || null,
+                lastname: form.lastname || null,
             });
             break;
-        case Enum.titlePublication:
-            await postValues(Enum.titlePublication, token, {
-                platform_code: form.get("platform_code"),
-                video_game_id: parseInt(form.get("video_game_id")),
-                release_date: form.get("release_date"),
-                release_price: parseInt(form.get("release_price")),
-                store_page_url: form.get("store_page_url"),
+        case Enum.TITLE_PUBLICATION:
+            await postValues(Enum.TITLE_PUBLICATION, token, {
+                ...form,
+                release_date: dayjs(form.publication_date).format("YYYY-MM-DD"),
+                store_page_url: form.store_page_url || null,
             });
             break;
-        case Enum.titleGame:
-            await postValues(Enum.titleGame, token, {
-                user_id: parseInt(form.get("user_id")),
-                publication_id: parseInt(form.get("publication_id")),
-                is_owned: form.get("is_owned") === "true",
-                release_date: form.get("release_date"),
-                review_rating: parseInt(form.get("review_rating")),
-                review_comment: form.get("review_comment"),
+        case Enum.TITLE_GAME:
+            await postValues(Enum.TITLE_GAME, token, {
+                ...form,
+                review_date: form.review_date
+                    ? dayjs(form.review_date).format("YYYY-MM-DD")
+                    : null,
+                review_comment: form.review_comment || null,
             });
             break;
-        case Enum.titleGenre:
-            await postValues(Enum.titleGenre, token, {
-                name: form.get("name"),
-                description: form.get("description"),
-                picture: form.get("picture"),
+        case Enum.TITLE_USER_WITH_GAME:
+            await postValues(`user/insertWithGames`, token, {
+                ...form,
+                firstname: form.firstname || null,
+                lastname: form.lastname || null,
+                publications_ids: form.publications_ids.map(
+                    (publication) => publication[1]
+                ),
             });
             break;
-        case Enum.titlePlatform:
-            await postValues(Enum.titlePlatform, token, {
-                code: form.get("code"),
-                description: form.get("description"),
-                abbreviation: form.get("abbreviation"),
-                picture: form.get("picture"),
+        case Enum.TITLE_PLATFORM_WITH_VIDEO_GAMES:
+            const videoGamesInfo = [];
+            const formData = new FormInstance();
+            formData.append("code", form.code);
+            formData.append("description", form.description);
+            formData.append("abbreviation", form.abbreviation);
+            formData.append("platformPicture", form.platformPicture);
+            form.video_games.forEach((videoGame) => {
+                const { videoGamePicture, ...videoGameData } = videoGame;
+                videoGameData.release_date = dayjs(
+                    videoGameData.release_date
+                ).format("YYYY-MM-DD");
+                videoGameData.store_page_url =
+                    videoGameData.store_page_url || null;
+                formData.append("videoGamesPictures", videoGamePicture);
+                videoGamesInfo.push(videoGameData);
             });
+            formData.append("video_games", JSON.stringify(videoGamesInfo));
+            await postValues(`platform/withVideoGames`, token, formData);
             break;
-        case Enum.titleCategory:
-            await postValues(Enum.titleCategory, token, {
-                video_game_id: parseInt(form.get("video_game_id")),
-                genre_id: parseInt(form.get("genre_id")),
-            });
-            break;
-        case Enum.titleVideoGame:
-            await postValues(Enum.titleVideoGame, token, {
-                name: form.get("name"),
-                description: form.get("description"),
-                picture: form.get("picture"),
-            });
-            break;
+        default:
+            await postValues(title, token, form);
     }
 }
-
-export default postForm;

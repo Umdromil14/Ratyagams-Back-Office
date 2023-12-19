@@ -1,42 +1,46 @@
 /**
- * this function is used to modelise the data for the table component
- * 
- * @param {Array} values
+ * Stringify the values of the array and add a key to each object of the array
+ *
+ * @param {Array} values 
  * @param {Object} key  equals to the id of the table row
  * @param {object} valuesToUpdate  object with the keys to update
  * @param {String=} valuesToUpdate.date  value inside the values array
  * @param {String=} valuesToUpdate.url  value inside the values array
  * @param {String=} valuesToUpdate.boolean  value inside the values array
- * @returns
+ * @returns {Array} the values array with the values updated
  */
 function valuesToString(values, keys, valuesToUpdate = undefined) {
-    values.forEach((element) => {
+    values.forEach((value) => {
         if (valuesToUpdate !== undefined) {
-            if (valuesToUpdate.url !== undefined) {
-                element[valuesToUpdate.url] = (
-                    <a href={element[valuesToUpdate.url]} target="_blank">
-                        {element[valuesToUpdate.url]}
+            if (valuesToUpdate.url) {
+                value[valuesToUpdate.url] = (
+                    <a href={value[valuesToUpdate.url]} target="_blank">
+                        {value[valuesToUpdate.url]}
                     </a>
                 );
             }
-            if (valuesToUpdate.date !== undefined) {
-                element[valuesToUpdate.date] = new Date(
-                    element[valuesToUpdate.date]
-                ).toLocaleDateString();
+            if (valuesToUpdate.date) {
+                if (value[valuesToUpdate.date] === null) {
+                    value[valuesToUpdate.date] = "";
+                } else {
+                    value[valuesToUpdate.date] = new Date(
+                        value[valuesToUpdate.date]
+                    ).toLocaleDateString();
+                }
             }
-            if (valuesToUpdate.boolean !== undefined) {
-                element[valuesToUpdate.boolean] =
-                    element[valuesToUpdate.boolean].toString();
+            if (valuesToUpdate.boolean) {
+                value[valuesToUpdate.boolean] =
+                    value[valuesToUpdate.boolean].toString();
             }
         }
-        element.key = "";
+        value.key = "";
         if (keys.length > 1) {
             for (const key of keys) {
-                element.key += element[key] + "/";
+                value.key += value[key] + "/";
             }
-            element.key = element.key.slice(0, -1);
+            value.key = value.key.slice(0, -1);
         } else {
-            element.key += element[keys];
+            value.key += value[keys];
         }
     });
     return values;
@@ -51,38 +55,34 @@ function valuesToString(values, keys, valuesToUpdate = undefined) {
  *
  * @example
  *
- * const publication = [
- *   {
+ * const publication = [{
  *     id: 1,
  *     name: "publication 1",
  *     platform_code: "platform 1",
- *   },
- *   {
- *   id: 2,
- *   name: "publication 2",
- *   platform_code: "platform 2",
+ * }, {
+ *     id: 2,
+ *     name: "publication 2",
+ *     platform_code: "platform 2",
  * }];
- * const platform = [
- *  {
- *   code: "platform 1",
- *   abbreviation: "P1",
- *  },
- *  {
- *   code: "platform 2",
- *   abbreviation: "P2",
- *  }];
+ * const platform = [{
+ *     code: "platform 1",
+ *     abbreviation: "P1",
+ * }, {
+ *     code: "platform 2",
+ *     abbreviation: "P2",
+ * }];
  * modelingPublication(publication, platform);
- * return [
- *    {
- *       value: 'platform 1',
- *       label: 'P1',
- *       children: [
- *         {
- *           value: '1',
- *           label: 'publication 1',
- *         },
- *       ],
+ * return [{
+ *     value: 'platform 1',
+ *     label: 'P1',
+ *     children: [{
+ *         value: '1',
+ *         label: 'publication 1',
  *     },
+ *     ...
+ *     ]
+ * },
+ * ...
  * ]
  */
 export function modelingPublication(publication, platform) {

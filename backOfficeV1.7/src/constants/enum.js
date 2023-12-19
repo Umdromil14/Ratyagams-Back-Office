@@ -1,27 +1,29 @@
-export const keyPublication = ["id"];
-export const UpdateValuesPublication = {
+export const KEY_PUBLICATION = ["id"];
+export const UPDATE_VALUES_PUBLICATION = {
     date: "release_date",
     url: "store_page_url",
 };
-export const keyGame = ["user_id", "publication_id"];
-export const UpdateValuesGame = { date: "review_date", boolean: "is_owned" };
-export const keyPlatform = ["code"];
+export const KEY_GAME = ["user_id", "publication_id"];
+export const UPDATE_VALUES_GAME = { date: "review_date", boolean: "is_owned" };
+export const KEY_PLATFORM = ["code"];
 
-export const keyUser = ["id"];
-export const UpdateValuesUser = { boolean: "is_admin" };
+export const KEY_USER = ["id"];
+export const UPDATE_VALUES_USER = { boolean: "is_admin" };
 
-export const keyCategory = ["genre_id", "video_game_id"];
+export const KEY_CATEGORY = ["genre_id", "video_game_id"];
 
-export const keyVideoGame = ["id"];
+export const KEY_VIDEOGAME = ["id"];
 
-export const keyGenre = ["id"];
+export const KEY_GENRE = ["id"];
 
-export const titleUser = "user";
-export const titlePublication = "publication";
-export const titleGame = "game";
-export const titlePlatform = "platform";
-export const titleGenre = "genre";
-export const titleCategory = "category";
-export const titleVideoGame = "videoGame";
+export const TITLE_USER = "user";
+export const TITLE_PUBLICATION = "publication";
+export const TITLE_GAME = "game";
+export const TITLE_PLATFORM = "platform";
+export const TITLE_GENRE = "genre";
+export const TITLE_CATEGORY = "category";
+export const TITLE_VIDEO_GAME = "videoGame";
+export const TITLE_USER_WITH_GAME = "userWithGames";
+export const TITLE_PLATFORM_WITH_VIDEO_GAMES = "platformWithVideoGames";
 
-export const baseUrl = "http://localhost:3001/";
+export const BASE_URL = "http://localhost:3001/";

@@ -3,7 +3,7 @@ import "../css/AdminView.css";
 import NavigationBar from "../components/navigationBar";
 import { useSelector } from "react-redux";
 import { notification } from "antd";
-import ModalView from "../components/modal";
+import ModalView from "../components/modal/modal";
 import { useNavigate } from "react-router-dom";
 import {
     readWithPagination,
@@ -13,21 +13,25 @@ import TableView from "../components/table";
 import { deleteValues, getValues } from "../APIAccess/APIAccess";
 import { getSearchValues } from "../APIAccess/search";
 
+/**
+ * Admin view
+ *
+ * @returns {JSX.Element} The admin view
+ */
 function AdminView() {
     const navigate = useNavigate();
     const token = useSelector((state) => state.token.value);
-    const [title, setTitle] = useState(null); //use to set the title of the table
-    const [count, setCount] = useState(0); //use to set the count of the table
-    const [pagination, setPagination] = useState(1); //use to set the pagination of the table
-    const [limit, setLimit] = useState(10); //use to set the limit of the table
-    const [defaultValues, setDefaultValues] = useState(undefined); //use to set the default values of the modal
-    const [modalValues, setModalValues] = useState([]); //use to set the data of the modal
-    const [values, setValues] = useState([]); //use to set the data of the table
-    const [modalTitle, setModalTitle] = useState(null); //use to set the title of the modal
-    const [error, setError] = useState(false); //use to set the error of the table
-    const [isModalOpen, setIsModalOpen] = useState(false); //use to set the state of the modal
-    const [messageError, setMessageError] = useState(null); //use to set the message of the error
-    const [api, contextHolder] = notification.useNotification(); //use to set the notification
+    const [title, setTitle] = useState(null);
+    const [dataCount, setDataCount] = useState(0);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [defaultValues, setDefaultValues] = useState(undefined);
+    const [modalValues, setModalValues] = useState([]);
+    const [tableValues, setTableValues] = useState([]);
+    const [modalTitle, setModalTitle] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [notifier, contextHolder] = notification.useNotification();
+    const [modalDefaultValues, setModalDefaultValues] = useState({});
 
     useEffect(() => {
         if (!token) {
@@ -35,36 +39,16 @@ function AdminView() {
         }
     }, [token]);
 
-    const openNotification = () => {
-        api.error({
-            message: "Something went wrong...",
-            description: (
-                <ul>
-                    {messageError.map((element, index) => {
-                        return <li key={index}>{element}</li>;
-                    })}
-                </ul>
-            ),
-            placement: "bottomRight",
-            duration: 5,
-            style: {
-                width: 600,
-            },
-        });
-    };
-
     const handleSearch = (value, title) => {
         if (value.length > 2) {
-            getSearchValues(title, value, token)
+            getSearchValues(title, value, token, modalDefaultValues)
                 .then((response) => {
                     if (response !== undefined) {
-                        const data = {};
-                        data[title] = response;
-                        setModalValues({ ...modalValues, ...data });
+                        setModalValues({ ...modalValues, ...response });
                     }
                 })
                 .catch((error) => {
-                    handleErrors(error.response?.data.message.split(";"));
+                    handleNotification(error.response?.data.message.split(";"));
                 });
         } else {
             if (defaultValues === undefined) {
@@ -81,80 +65,106 @@ function AdminView() {
         }
     }, [isModalOpen]);
 
-    const handleModal = (modalTitle) => {
-        readAllValues(modalTitle, token)
+    const handleModal = (modalTitle, rowValues = {}) => {
+        setModalTitle(modalTitle);
+        readAllValues(modalTitle, token, rowValues)
             .then((response) => {
                 if (response !== undefined) {
                     setModalValues(response);
                 }
+                setModalDefaultValues(rowValues);
                 setIsModalOpen(true);
             })
             .catch((error) => {
-                handleErrors(error.response?.data.message.split(";"));
+                handleNotification(error.response?.data.message.split(";"));
             });
     };
 
-    function handleErrors(response) {
-        setError(true);
-        setMessageError(response);
-        if (response.some((e) => e.includes("JWT"))) {
+    /**
+     * Open a notification
+     *
+     * @param {string[]=} descriptions The descriptions to display (if contains JWT and type is error, redirect to login)
+     * @param {string=} type The type of notification (error or success or warning); default is error
+     *
+     * @returns {void}
+     */
+    const handleNotification = (descriptions, type = "error") => {
+        if (descriptions === undefined) {
+            descriptions = ["Unknown error"];
+        }
+
+        if (type === "error" && descriptions.some((e) => e.includes("JWT"))) {
             setTimeout(() => {
                 navigate("/");
-            }, 2000);
+            }, 5000);
         }
-    }
 
-    useEffect(() => {
-        if (error) {
-            openNotification();
-            setTimeout(() => {
-                setError(false);
-            }, 2000);
-        }
-    }, [error]);
+        notifier[type]({
+            message: type === "error" ? "Something went wrong" : "Success",
+            description: (
+                <ul>
+                    {descriptions.map((element, index) => {
+                        return <li key={index}>{element}</li>;
+                    })}
+                </ul>
+            ),
+            placement: "bottomRight",
+            duration: 5,
+            style: {
+                width: 600,
+            },
+        });
+    };
 
     const fetchData = (page, limit) => {
         readWithPagination(title, { page, limit }, token)
             .then((response) => {
-                setValues(response);
+                setTableValues(response);
             })
             .catch((error) => {
-                handleErrors([error.response?.data.message]);
+                handleNotification([error.response?.data.message]);
             });
     };
 
     const fetchDataCount = () => {
         getValues(`${title}/count`, token)
             .then((response) => {
-                setCount(response);
+                setDataCount(response);
             })
             .catch((error) => {
-                handleErrors([error.response?.data.message]);
+                handleNotification([error.response?.data.message]);
             });
     };
 
-    const handleDelete = (rowValue) => {
-        deleteValues(title, token, rowValue.key.split("/"))
+    const reloadCurrentValues = () => {
+        setPage(1);
+        fetchDataCount();
+        fetchData(1, limit);
+    }
+
+    const handleDelete = (rowValues) => {
+        deleteValues(title, token, rowValues.key.split("/"))
             .then(() => {
-                setPagination(1);
-                fetchDataCount();
-                fetchData(1, limit);
+                reloadCurrentValues();
+                handleNotification(["Successfully deleted"], "success");
             })
             .catch((error) => {
-                handleErrors([error.response?.data.message]);
+                handleNotification([error.response?.data.message]);
             });
+    };
+
+    const handleUpdate = (rowValues) => {
+        handleModal(title, rowValues);
     };
 
     useEffect(() => {
         if (title) {
-            fetchDataCount();
-            setPagination(1);
-            fetchData(1, limit);
+            reloadCurrentValues();
         }
     }, [title]);
 
     const handlePagination = (page, pageSize) => {
-        setPagination(page);
+        setPage(page);
         setLimit(pageSize);
         fetchData(page, pageSize);
     };
@@ -163,29 +173,30 @@ function AdminView() {
         <>
             {contextHolder}
             <NavigationBar
-                setModalTitle={setModalTitle}
-                setTitlePagination={setTitle}
-                handleModal={handleModal}
+                setTitle={setTitle}
+                handleModal={(modalTitle) => {
+                    handleModal(modalTitle);
+                }}
             />
-            <div className="table">
-                <TableView
-                    data={values}
-                    totalData={count}
-                    page={pagination}
-                    onDelete={handleDelete}
-                    onPaginationUpdate={handlePagination}
-                />
-            </div>
-            <div className="modal">
-                <ModalView
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    title={modalTitle}
-                    data={modalValues}
-                    handleErrors={handleErrors}
-                    handleSearch={handleSearch}
-                />
-            </div>
+            <TableView
+                data={tableValues}
+                dataCount={dataCount}
+                page={page}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
+                onPaginationUpdate={handlePagination}
+            />
+            <ModalView
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                modalTitle={modalTitle}
+                modalValues={modalValues}
+                handleNotification={handleNotification}
+                handleSearch={handleSearch}
+                initialValues={modalDefaultValues}
+                setInitialValues={setModalDefaultValues}
+                onUpdate={reloadCurrentValues}
+            />
         </>
     );
 }

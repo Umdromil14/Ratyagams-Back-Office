@@ -6,56 +6,43 @@ import { login } from "../APIAccess/APIAccess";
 import { useDispatch } from "react-redux";
 import { notification } from "antd";
 
+/**
+ * The home page
+ *
+ * @returns {JSX.Element} The home page
+ */
 function Home() {
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
-    const [error, setError] = useState(false);
-    const [api, notificationHolder] = notification.useNotification();
-    const [messageError, setMessageError] = useState(null);
+    const [notifier, notificationHolder] = notification.useNotification();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (error) {
-            openNotificationError();
-            setTimeout(() => {
-                setError(false);
-            }, 2000);
-        }
-    }, [error]);
-
-    function handleErrors(response) {
-        setError(true);
-        setMessageError(response);
-    }
-
     const openNotificationError = () => {
-        api.error({
-            message: "Something went wrong...",
-            description: messageError,
+        notifier.error({
+            message: "Login failed !",
             placement: "top",
-            duration: 2,
+            duration: 3,
         });
     };
 
-    const signIn = async () => {
-        try {
-            const is_admin = await login(
-                "user/login",
-                {
-                    login: usernameRef.current.value,
-                    password: passwordRef.current.value,
-                },
-                dispatch
-            );
-            if (is_admin) {
-                navigate("/admin");
-            } else {
-                handleErrors("You can't access to this page");
-            }
-        } catch (error) {
-            handleErrors(error.response.data.message);
-        }
+    const signIn = () => {
+        login(
+            "user/login",
+            {
+                login: usernameRef.current.value,
+                password: passwordRef.current.value,
+            },
+            dispatch
+        )
+            .then((isAdmin) => {
+                if (isAdmin) {
+                    navigate("/admin");
+                } else {
+                    openNotificationError();
+                }
+            })
+            .catch(() => openNotificationError());
     };
 
     return (
@@ -70,8 +57,12 @@ function Home() {
                     placeholder="Username"
                 />
                 <InputWithLabel
-                    label="Password"
-                    input={{ type: "password", id: "password", ref: passwordRef }}
+                    label="Password "
+                    input={{
+                        type: "password",
+                        id: "password",
+                        ref: passwordRef,
+                    }}
                     className={{ label: "label", input: "input" }}
                     placeholder="Password"
                 />

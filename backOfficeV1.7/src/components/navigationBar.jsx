@@ -5,22 +5,19 @@ import "../css/AdminView.css";
 import * as Enum from "../constants/enum";
 
 const search = "Type of the search : ";
+
 /**
- * creating the navigation bar for the admin view
+ * Creates the navigation bar for the admin view
  *
- * @param {function} setModalTitle set the title of the modal
- * @param {function} setTitlePagination set the title of the pagination
- * @param {function} handleModal handle the modal
+ * @param {Object} props the props
+ * @param {function} props.setTitle set the title of the pagination
+ * @param {function} props.handleModal handle the modal
  *
- * @returns {JSX.Element} - the navigation bar
+ * @returns {JSX.Element} The navigation bar
  */
-function NavigationBar({
-    setModalTitle,
-    setTitlePagination,
-    handleModal
-}) {
+function NavigationBar({ setTitle, handleModal }) {
     const [current, setCurrent] = useState();
-    const [title, setTitle] = useState("WELCOME TO THE ADMIN VIEW");
+    const [pageTitle, setPageTitle] = useState("WELCOME TO THE ADMIN VIEW");
 
     const handleClick = (e) => {
         setCurrent(e.key);
@@ -28,8 +25,8 @@ function NavigationBar({
 
     const adminPossibilities = [
         {
-            label: Enum.titlePublication,
-            key: Enum.titlePublication,
+            label: Enum.TITLE_PUBLICATION,
+            key: Enum.TITLE_PUBLICATION,
             icon: <DownCircleOutlined />,
             children: [
                 {
@@ -37,19 +34,20 @@ function NavigationBar({
                     type: "group",
                     children: [
                         {
-                            label: `create a ${Enum.titlePublication}`,
-                            key: `create${Enum.titlePublication}`,
+                            label: `create a ${Enum.TITLE_PUBLICATION}`,
+                            key: `create${Enum.TITLE_PUBLICATION}`,
                             onClick: () => {
-                                setModalTitle(Enum.titlePublication);
-                                handleModal(Enum.titlePublication);
+                                handleModal(Enum.TITLE_PUBLICATION);
                             },
                         },
                         {
-                            label: `read all ${Enum.titlePublication}`,
-                            key: `readAll${Enum.titlePublication}`,
+                            label: `read all ${Enum.TITLE_PUBLICATION}`,
+                            key: `readAll${Enum.TITLE_PUBLICATION}`,
                             onClick: () => {
-                                setTitle(`${search} ${Enum.titlePublication}`);
-                                setTitlePagination(Enum.titlePublication);
+                                setPageTitle(
+                                    `${search} ${Enum.TITLE_PUBLICATION}`
+                                );
+                                setTitle(Enum.TITLE_PUBLICATION);
                             },
                         },
                     ],
@@ -57,8 +55,8 @@ function NavigationBar({
             ],
         },
         {
-            label: Enum.titleGame,
-            key: Enum.titleGame,
+            label: Enum.TITLE_GAME,
+            key: Enum.TITLE_GAME,
             icon: <DownCircleOutlined />,
             children: [
                 {
@@ -66,19 +64,18 @@ function NavigationBar({
                     label: "Create & Read",
                     children: [
                         {
-                            label: `create a ${Enum.titleGame}`,
-                            key: `create${Enum.titleGame}`,
+                            label: `create a ${Enum.TITLE_GAME}`,
+                            key: `create${Enum.TITLE_GAME}`,
                             onClick: () => {
-                                setModalTitle(Enum.titleGame);
-                                handleModal(Enum.titleGame);
+                                handleModal(Enum.TITLE_GAME);
                             },
                         },
                         {
-                            label: `read all ${Enum.titleGame}`,
-                            key: `readAll${Enum.titleGame}`,
+                            label: `read all ${Enum.TITLE_GAME}`,
+                            key: `readAll${Enum.TITLE_GAME}`,
                             onClick: () => {
-                                setTitle(`${search} ${Enum.titleGame}`);
-                                setTitlePagination(Enum.titleGame);
+                                setPageTitle(`${search} ${Enum.TITLE_GAME}`);
+                                setTitle(Enum.TITLE_GAME);
                             },
                         },
                     ],
@@ -91,7 +88,7 @@ function NavigationBar({
                             label: "insert a user with some games",
                             key: "insertUserWithGame",
                             onClick: () => {
-                                setTitle("INSERT A USER WITH SOME GAMES");
+                                handleModal(Enum.TITLE_USER_WITH_GAME);
                             },
                         },
                     ],
@@ -99,8 +96,8 @@ function NavigationBar({
             ],
         },
         {
-            label: Enum.titlePlatform,
-            key: Enum.titlePlatform,
+            label: Enum.TITLE_PLATFORM,
+            key: Enum.TITLE_PLATFORM,
             icon: <DownCircleOutlined />,
             children: [
                 {
@@ -108,19 +105,18 @@ function NavigationBar({
                     label: "Create & Read",
                     children: [
                         {
-                            label: `Create a ${Enum.titlePlatform}`,
-                            key: `create${Enum.titlePlatform}`,
+                            label: `Create a ${Enum.TITLE_PLATFORM}`,
+                            key: `create${Enum.TITLE_PLATFORM}`,
                             onClick: () => {
-                                setModalTitle(Enum.titlePlatform);
-                                handleModal(Enum.titlePlatform);
+                                handleModal(Enum.TITLE_PLATFORM);
                             },
                         },
                         {
-                            label: `read all ${Enum.titlePlatform}`,
-                            key: `readAll${Enum.titlePlatform}`,
+                            label: `read all ${Enum.TITLE_PLATFORM}`,
+                            key: `readAll${Enum.TITLE_PLATFORM}`,
                             onClick: () => {
-                                setTitle(`${search} ${Enum.titlePlatform}`);
-                                setTitlePagination(Enum.titlePlatform);
+                                setPageTitle(`${search} ${Enum.TITLE_PLATFORM}`);
+                                setTitle(Enum.TITLE_PLATFORM);
                             },
                         },
                     ],
@@ -130,10 +126,10 @@ function NavigationBar({
                     label: "Transaction",
                     children: [
                         {
-                            label: "insert a platform with some games",
-                            key: "insertPlatformWithGame",
+                            label: "insert a platform with some video games",
+                            key: "insertPlatformWithVideoGame",
                             onClick: () => {
-                                setTitle("INSERT A PLATFORM WITH SOME GAMES");
+                                handleModal(Enum.TITLE_PLATFORM_WITH_VIDEO_GAMES);
                             },
                         },
                     ],
@@ -141,8 +137,8 @@ function NavigationBar({
             ],
         },
         {
-            label: Enum.titleUser,
-            key: Enum.titleUser,
+            label: Enum.TITLE_USER,
+            key: Enum.TITLE_USER,
             icon: <DownCircleOutlined />,
             children: [
                 {
@@ -150,19 +146,18 @@ function NavigationBar({
                     label: "Create & Read",
                     children: [
                         {
-                            label: `Create a ${Enum.titleUser}`,
-                            key: `create${Enum.titleUser}`,
+                            label: `Create a ${Enum.TITLE_USER}`,
+                            key: `create${Enum.TITLE_USER}`,
                             onClick: () => {
-                                setModalTitle(Enum.titleUser);
-                                handleModal(Enum.titleUser);
+                                handleModal(Enum.TITLE_USER);
                             },
                         },
                         {
-                            label: `read all ${Enum.titleUser}`,
-                            key: `readAll${Enum.titleUser}`,
+                            label: `read all ${Enum.TITLE_USER}`,
+                            key: `readAll${Enum.TITLE_USER}`,
                             onClick: () => {
-                                setTitle(`${search} ${Enum.titleUser}`);
-                                setTitlePagination(Enum.titleUser);
+                                setPageTitle(`${search} ${Enum.TITLE_USER}`);
+                                setTitle(Enum.TITLE_USER);
                             },
                         },
                     ],
@@ -175,7 +170,7 @@ function NavigationBar({
                             label: "insert a user with some games",
                             key: "insertOneUserWithGame",
                             onClick: () => {
-                                setTitle("INSERT A USER WITH SOME GAMES");
+                                handleModal(Enum.TITLE_USER_WITH_GAME);
                             },
                         },
                     ],
@@ -183,8 +178,8 @@ function NavigationBar({
             ],
         },
         {
-            label: Enum.titleCategory,
-            key: Enum.titleCategory,
+            label: Enum.TITLE_CATEGORY,
+            key: Enum.TITLE_CATEGORY,
             icon: <DownCircleOutlined />,
             children: [
                 {
@@ -192,48 +187,18 @@ function NavigationBar({
                     label: "Create & Read",
                     children: [
                         {
-                            label: `Create a ${Enum.titleCategory}`,
-                            key: `create${Enum.titleCategory}`,
+                            label: `Create a ${Enum.TITLE_CATEGORY}`,
+                            key: `create${Enum.TITLE_CATEGORY}`,
                             onClick: async () => {
-                                setModalTitle(Enum.titleCategory);
-                                handleModal(Enum.titleCategory);
+                                handleModal(Enum.TITLE_CATEGORY);
                             },
                         },
                         {
-                            label: `read all ${Enum.titleCategory}`,
-                            key: `readAll${Enum.titleCategory}`,
+                            label: `read all ${Enum.TITLE_CATEGORY}`,
+                            key: `readAll${Enum.TITLE_CATEGORY}`,
                             onClick: () => {
-                                setTitle(`${search} ${Enum.titleCategory}`);
-                                setTitlePagination(Enum.titleCategory);
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            label: Enum.titleVideoGame,
-            key: Enum.titleVideoGame,
-            icon: <DownCircleOutlined />,
-            children: [
-                {
-                    type: "group",
-                    label: "Create & Read",
-                    children: [
-                        {
-                            label: `Create a ${Enum.titleVideoGame}`,
-                            key: `create${Enum.titleVideoGame}`,
-                            onClick: () => {
-                                setModalTitle(Enum.titleVideoGame);
-                                handleModal(Enum.titleVideoGame);
-                            },
-                        },
-                        {
-                            label: `read all ${Enum.titleVideoGame}`,
-                            key: `readAll${Enum.titleVideoGame}`,
-                            onClick: () => {
-                                setTitle(`${search} ${Enum.titleVideoGame}`);
-                                setTitlePagination(Enum.titleVideoGame);
+                                setPageTitle(`${search} ${Enum.TITLE_CATEGORY}`);
+                                setTitle(Enum.TITLE_CATEGORY);
                             },
                         },
                     ],
@@ -241,8 +206,8 @@ function NavigationBar({
             ],
         },
         {
-            label: Enum.titleGenre,
-            key: Enum.titleGenre,
+            label: Enum.TITLE_VIDEO_GAME,
+            key: Enum.TITLE_VIDEO_GAME,
             icon: <DownCircleOutlined />,
             children: [
                 {
@@ -250,19 +215,48 @@ function NavigationBar({
                     label: "Create & Read",
                     children: [
                         {
-                            label: `Create a ${Enum.titleGenre}`,
-                            key: `create${Enum.titleGenre}`,
+                            label: `Create a ${Enum.TITLE_VIDEO_GAME}`,
+                            key: `create${Enum.TITLE_VIDEO_GAME}`,
                             onClick: () => {
-                                setModalTitle(Enum.titleGenre);
-                                handleModal(Enum.titleGenre);
+                                handleModal(Enum.TITLE_VIDEO_GAME);
                             },
                         },
                         {
-                            label: `Read all ${Enum.titleGenre}`,
-                            key: `readAll${Enum.titleGenre}`,
+                            label: `read all ${Enum.TITLE_VIDEO_GAME}`,
+                            key: `readAll${Enum.TITLE_VIDEO_GAME}`,
                             onClick: () => {
-                                setTitle(`${search} ${Enum.titleGenre}`);
-                                setTitlePagination(Enum.titleGenre);
+                                setPageTitle(
+                                    `${search} ${Enum.TITLE_VIDEO_GAME}`
+                                );
+                                setTitle(Enum.TITLE_VIDEO_GAME);
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            label: Enum.TITLE_GENRE,
+            key: Enum.TITLE_GENRE,
+            icon: <DownCircleOutlined />,
+            children: [
+                {
+                    type: "group",
+                    label: "Create & Read",
+                    children: [
+                        {
+                            label: `Create a ${Enum.TITLE_GENRE}`,
+                            key: `create${Enum.TITLE_GENRE}`,
+                            onClick: () => {
+                                handleModal(Enum.TITLE_GENRE);
+                            },
+                        },
+                        {
+                            label: `Read all ${Enum.TITLE_GENRE}`,
+                            key: `readAll${Enum.TITLE_GENRE}`,
+                            onClick: () => {
+                                setPageTitle(`${search} ${Enum.TITLE_GENRE}`);
+                                setTitle(Enum.TITLE_GENRE);
                             },
                         },
                     ],
@@ -277,11 +271,10 @@ function NavigationBar({
                 className="navBar"
                 onClick={handleClick}
                 mode="horizontal"
-                style={{ color: "white" }}
                 items={adminPossibilities}
                 selectedKeys={[current]}
             />
-            <h2 id="titleView">{title}</h2>
+            <h2 id="titleView">{pageTitle}</h2>
         </div>
     );
 }

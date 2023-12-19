@@ -1,28 +1,27 @@
 import axios from "axios";
 import valuesToString from "../tools/valuesToString";
 import { setToken } from "../store/slice/token";
-import { baseUrl } from "../constants/enum";
+import { BASE_URL } from "../constants/enum";
 
 /**
- * This function is used to get the values to display in the table
+ * Get values to display in a table
  *
- * @param {object} token - token of the user
- * @param {string} url - the last part of the url
- * @param {Function} handleErrors - function to handle errors
- * @param {Array} keys - the keys of the object to display
- * @param {object} query - the query to send to the server
- * @param {number} query.page - the page to display
- * @param {number} query.limit - the number of values to display
- * @param {object=} valueToUpdate - the values to update
- * @param {string=} valueToUpdate.boolean - the key of the boolean to update
- * @param {string=} valueToUpdate.date - the key of the date to update
- * @param {string=} valueToUpdate.url - the key of the url to update
- * @returns {object} return an object with the values to display
- *
+ * @param {object} token token of the user
+ * @param {string} url the last part of the url
+ * @param {Array} keys the keys of the object to display
+ * @param {object} params the params
+ * @param {number} params.page the page to display
+ * @param {number} params.limit the number of values to display
+ * @param {object=} valueToUpdate the values to stringify before displaying
+ * @param {string=} valueToUpdate.boolean the key of the boolean to update
+ * @param {string=} valueToUpdate.date the key of the date to update
+ * @param {string=} valueToUpdate.url the key of the url to update
+ * 
  * @throws {Error} if the request failed
+ * 
+ * @returns {Promise<object>} a promise with an object with the values
  *
  * @example
- *
  * const result = await getValuesToDisplay(
  *     token,
  *     "user",
@@ -35,14 +34,14 @@ export async function getValuesToDisplay(
     token,
     url,
     keys,
-    query,
+    params,
     valueToUpdate = undefined
 ) {
     const result = valuesToString(
         (
-            await axios.get(`${baseUrl}${url}`, {
+            await axios.get(`${BASE_URL}${url}`, {
                 headers: token.headers,
-                params: query,
+                params: params,
             })
         ).data,
         keys,
@@ -52,110 +51,145 @@ export async function getValuesToDisplay(
 }
 
 /**
- * This function is used to get values with params or not
+ * Get values
  *
- * @param {string} url - the last part of the url
- * @param {object} token - the token of the user
- * @param {object=} params - the params to send to the server
+ * @param {string} url the last part of the url
+ * @param {object} token the token of the user
+ * @param {object=} params the params
+ * @param {string=} responseType the type of the response
  *
  * @throws {Error} if the request failed
- * @returns {Promise<Array>} return the values
+ * 
+ * @returns {Promise<Array>} a promise with an array of values
  */
-export async function getValues(url, token, params = undefined) {
+export async function getValues(
+    url,
+    token,
+    params,
+    responseType
+) {
     return (
-        await axios.get(`${baseUrl}${url}`, {
+        await axios.get(`${BASE_URL}${url}`, {
             headers: token.headers,
             params: params,
+            responseType: responseType,
         })
     ).data;
 }
 
 /**
- * This function is used login the user and get the token
+ * Login user
  *
- * @param {string} url - the last part of the url
- * @param {object} user - the user to login
- * @param {string} user.login - the email/username of the user
- * @param {string} user.password - the password of the user
- * @param {Dispatch} dispatch - the dispatch function
+ * @param {string} url the last part of the url
+ * @param {object} user the information of the user
+ * @param {string} user.login the email/username of the user
+ * @param {string} user.password the password of the user
+ * @param {Dispatch} dispatch the dispatch function of the store
  *
  * @throws {Error} if the request failed
- * @returns {Promise<boolean>} return true if the user is admin, false if not
- *
+ * 
+ * @returns {Promise<boolean>} a promise with a boolean; `true` if the user is admin, `false` otherwise
  */
 export async function login(url, user, dispatch) {
-    const { data } = await axios.post(`${baseUrl}${url}`, user);
+    const { data } = await axios.post(`${BASE_URL}${url}`, user);
     if (data.token) {
         dispatch(setToken(data.token));
-        const { is_admin } = await getValues(`user/me`, {
+        const { is_admin: isAdmin } = await getValues(`user/me`, {
             headers: {
                 Authorization: `Bearer ${data.token}`,
             },
         });
-        return is_admin;
+        return isAdmin;
     }
 }
 
 /**
- * This function is used to post values to the server
+ * Post values
  *
- * @param {string} url - the last part of the url
- * @param {object} token - the token of the user
- * @param {object} body - the body to send to the server
- * @param {string=} body.picture - the picture to send to the server
+ * @param {string} url the last part of the url
+ * @param {object} token the token of the user
+ * @param {object} body the body to send to the server
+ * @param {File=} body.picture the picture to send to the server
  *
  * @throws {Error} if the request failed
+ * 
  * @returns {Promise<void>}
  */
 export async function postValues(url, token, body) {
-    if (Object.keys(body).includes("picture")) {
-        await axios.post(`${baseUrl}${url}`, body, {
+    if (body.picture || body.platformPicture || body.videoGamesPictures) {
+        await axios.post(`${BASE_URL}${url}`, body, {
             headers: {
                 Authorization: token.headers.Authorization,
                 "Content-Type": "multipart/form-data",
             },
         });
     } else {
-        await axios.post(`${baseUrl}${url}`, body, {
+        await axios.post(`${BASE_URL}${url}`, body, {
             headers: token.headers,
         });
     }
 }
 
 /**
- * Delete values from the server
+ * Delete values
  *
- * @param {string} url - the last part of the url
- * @param {object} token - the token of the user
- * @param {Array} ids - the ids of the values to delete
+ * @param {string} url the last part of the url
+ * @param {object} token the token of the user
+ * @param {string[]} ids the ids of the values to delete in order
  *
  * @throws {Error} if the request failed
  *
  * @returns {Promise<void>}
  */
 export async function deleteValues(url, token, ids) {
-    await axios.delete(`${baseUrl}${url}/${ids.join("/")}`, {
+    await axios.delete(`${BASE_URL}${url}/${ids.join("/")}`, {
         headers: token.headers,
     });
 }
 
 /**
- * This function is used to get all values from the urls
+ * Update values
  *
- * @param {Array} urls - the urls to get the values
- * @param {object} token - the token of the user
+ * @param {string} url the last part of the url
+ * @param {object} token the token of the user
+ * @param {string[]} ids the ids of the values to update in order
+ * @param {object} updateValues the values to update
  *
  * @throws {Error} if the request failed
- * @returns {object} return an object with the values
+ *
+ * @returns {Promise<void>}
+ */
+export async function updateValues(url, token, ids, updateValues) {
+    const headers = updateValues.picture
+        ? {
+              Authorization: token.headers.Authorization,
+              "Content-Type": "multipart/form-data",
+          }
+        : token.headers;
+
+    await axios.patch(`${BASE_URL}${url}/${ids.join("/")}`, updateValues, {
+        headers: headers,
+    });
+}
+
+/**
+ * Get all values (max limited by the server)
+ *
+ * @param {string[]} urls the urls to get the values
+ * @param {object} token the token of the user
+ *
+ * @throws {Error} if the request failed
+ * 
+ * @returns {Promise<object>} a promise with an object with the values
  */
 export async function getAllValues(urls, token) {
     const object = {};
     const promises = await Promise.all(
-        urls.map((url) => axios.get(`${baseUrl}${url}`, token))
+        urls.map((url) => axios.get(`${BASE_URL}${url}`, token))
     );
     promises.map((promise) =>
         urls.map((url) => {
-            if (promise.config.url === `${baseUrl}${url}`) {
+            if (promise.config.url === `${BASE_URL}${url}`) {
                 object[url] = promise.data;
             }
         })
