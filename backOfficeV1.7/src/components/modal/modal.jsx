@@ -68,6 +68,7 @@ function ModalView({
                     onUpdate();
                 })
                 .catch((error) => {
+                    console.log(error);
                     handleNotification(error.response?.data.message.split(";"));
                 });
         } else {
@@ -77,6 +78,7 @@ function ModalView({
                     handleNotification(["Creation successful"], "success");
                 })
                 .catch((error) => {
+                    console.log(error);
                     handleNotification(error.response?.data.message.split(";"));
                 });
         }

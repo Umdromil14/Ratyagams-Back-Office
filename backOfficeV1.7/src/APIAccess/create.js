@@ -33,6 +33,7 @@ export default async function post(title, form, token) {
         case Enum.TITLE_GAME:
             await postValues(Enum.TITLE_GAME, token, {
                 ...form,
+                publication_id: form.publication_id[1],
                 review_date: form.review_date
                     ? dayjs(form.review_date).format("YYYY-MM-DD")
                     : null,
@@ -51,7 +52,7 @@ export default async function post(title, form, token) {
             break;
         case Enum.TITLE_PLATFORM_WITH_VIDEO_GAMES:
             const videoGamesInfo = [];
-            const formData = new FormInstance();
+            const formData = new FormData();
             formData.append("code", form.code);
             formData.append("description", form.description);
             formData.append("abbreviation", form.abbreviation);
@@ -67,7 +68,7 @@ export default async function post(title, form, token) {
                 videoGamesInfo.push(videoGameData);
             });
             formData.append("video_games", JSON.stringify(videoGamesInfo));
-            await postValues(`platform/withVideoGames`, token, formData);
+            await postValues(`platform/withVideoGames`, token,formData);
             break;
         default:
             await postValues(title, token, form);

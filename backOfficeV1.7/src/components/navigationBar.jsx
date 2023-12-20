@@ -4,7 +4,7 @@ import { DownCircleOutlined } from "@ant-design/icons";
 import "../css/AdminView.css";
 import * as Enum from "../constants/enum";
 
-const search = "Type of the search : ";
+const search = "Search type : ";
 
 /**
  * Creates the navigation bar for the admin view

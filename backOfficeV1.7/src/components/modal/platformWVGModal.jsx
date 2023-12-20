@@ -106,7 +106,7 @@ function platformModalWithVideoGames(form) {
                                             },
                                         ]}
                                     >
-                                        <Input placeholder="Code"/>
+                                        <Input placeholder="Name"/>
                                     </Form.Item>
                                     <Form.Item
                                         label="Description"

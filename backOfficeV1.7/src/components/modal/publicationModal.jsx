@@ -111,7 +111,7 @@ function publicationModal(publicationForm, modalValues, handleSearch, initialVal
             <Form.Item name="release_price" label="Release price" >
                 <InputNumber
                     min={0}
-                    max={100}
+                    max={999.99}
                     placeholder="Price"
                     step={0.1}
                 />

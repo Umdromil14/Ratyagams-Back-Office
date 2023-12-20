@@ -27,7 +27,7 @@ export default async function update(title, token, form, ids) {
         case Enum.TITLE_PUBLICATION:
             await updateValues(Enum.TITLE_PUBLICATION, token, ids, {
                 ...form,
-                release_date: dayjs(form.publication_date).format("YYYY-MM-DD"),
+                release_date: dayjs(form.release_date).format("YYYY-MM-DD"),
                 store_page_url: form.store_page_url || null,
             });
             break;

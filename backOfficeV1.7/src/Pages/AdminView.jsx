@@ -76,6 +76,7 @@ function AdminView() {
                 setIsModalOpen(true);
             })
             .catch((error) => {
+                console.log(error);
                 handleNotification(error.response?.data.message.split(";"));
             });
     };
@@ -136,8 +137,8 @@ function AdminView() {
             });
     };
 
-    const reloadCurrentValues = () => {
-        setPage(1);
+    const reloadCurrentValues = (page = 1) => {
+        setPage(page);
         fetchDataCount();
         fetchData(1, limit);
     }
@@ -195,7 +196,7 @@ function AdminView() {
                 handleSearch={handleSearch}
                 initialValues={modalDefaultValues}
                 setInitialValues={setModalDefaultValues}
-                onUpdate={reloadCurrentValues}
+                onUpdate={() => reloadCurrentValues(page)}
             />
         </>
     );
