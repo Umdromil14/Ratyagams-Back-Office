@@ -1,0 +1,11 @@
+admins:
+    {
+        "login": "BG"
+        "email": "bg@email.com"
+        "password": "M0nk$yReview" 
+    }
+    {
+        "login": "admin"
+        "email": "admin@gmail.com"
+        "password": "password"
+    }
