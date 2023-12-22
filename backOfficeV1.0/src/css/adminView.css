@@ -1,0 +1,17 @@
+.navBar {
+    background-color: #4caf50;
+    color : white;
+    justify-content: space-evenly;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 30px;
+}
+
+#titleView {
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-style: italic;
+    margin: 10px;
+}
