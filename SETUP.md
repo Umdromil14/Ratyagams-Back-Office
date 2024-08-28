@@ -1,4 +1,4 @@
-## Pour lancer le code du back office, il faut suivre les étapes suivantes:
+### Pour lancer le code du back office, il faut suivre les étapes suivantes:
 
 - lancer l'API sur votre IDE préféré;
 - ouvrir le folder backOffice égalemment sur votre IDE préféré;
